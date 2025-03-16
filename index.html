@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trading Risk Management Calculator</title>
+    <!-- Chart.js from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        /* Modern reset and variables */
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #f97316;
+            --text-color: #1e293b;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --gradient-start: #3b82f6;
+            --gradient-end: #8b5cf6;
+            --border-radius: 12px;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 15px;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Container styling with improved responsiveness */
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Grid layout for different screen sizes */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        /* Responsive breakpoints */
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 1.25rem;
+            }
+        }
+
+        /* Very small mobile devices */
+        @media (max-width: 350px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo {
+            width: 80px;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 0.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .logo {
+                width: 100px;
+            }
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        @media (min-width: 576px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* Input styling */
+        .input-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            -webkit-appearance: none; /* Removes iOS default styling */
+        }
+
+        /* Fixing iOS Safari zoom on focus */
+        @media screen and (max-width: 767px) {
+            input {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            -webkit-tap-highlight-color: transparent; /* Removes tap highlight on iOS */
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        @media (min-width: 768px) {
+            button:hover {
+                transform: translateY(-2px);
+            }
+            
+            button:active {
+                transform: translateY(1px);
+            }
+        }
+
+        /* Result styling */
+        .result-card {
+            padding: 1.25rem;
+            background-color: var(--light-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: 100%;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-subtitle {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metric:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .metric-label {
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-weight: 600;
+        }
+
+        .positive {
+            color: var(--success-color);
+        }
+
+        .negative {
+            color: var(--danger-color);
+        }
+
+        .charts-container {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width: 992px) {
+            .charts-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .chart-wrapper {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            height: 250px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-wrapper {
+                height: 300px;
+            }
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        footer {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        /* Progress bar for capital utilization */
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Tooltip styles - improved for touch devices */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip i {
+            font-style: normal;
+            color: var(--primary-color);
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: rgba(37, 99, 235, 0.1);
+            font-size: 0.8rem;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #334155;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            font-weight: normal;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            pointer-events: none;
+        }
+
+        /* For mobile - tooltip appears on tap */
+        @media (max-width: 767px) {
+            .tooltip-active .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        /* For desktop - tooltip appears on hover */
+        @media (min-width: 768px) {
+            .tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        /* Fix for tooltip position on small screens */
+        @media (max-width: 576px) {
+            .tooltip .tooltip-text {
+                width: 180px;
+                margin-left: -90px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Results section adjustments */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://res.cloudinary.com/dzt3tudwf/image/upload/v1730103002/435888818_122113965770263446_4043677921951462990_n-removebg-preview_rdqhem.png" alt="Logo" class="logo">
+            <h1>Stock Risk Management Calculator</h1>
+            <p class="subtitle">Make informed trading decisions by calculating your risk</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="form-section">
+                <form id="riskForm">
+                    <div class="input-group">
+                        <label for="totalCapital">Total Capital (PKR):</label>
+                        <input type="number" id="totalCapital" step="0.01" placeholder="Enter your total capital" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="buyPrice">Buy Price per Share (PKR):</label>
+                        <input type="number" id="buyPrice" step="0.01" placeholder="Enter buy price" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="takeProfitPrice">Take Profit Price per Share (PKR):</label>
+                        <input type="number" id="takeProfitPrice" step="0.01" placeholder="Enter target price" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="stopLossPrice">Stop Loss Price per Share (PKR):</label>
+                        <input type="number" id="stopLossPrice" step="0.01" placeholder="Enter stop loss price" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="riskPercentage" class="tooltip">
+                            Risk Percentage per Trade (%): 
+                            <i>?</i>
+                            <span class="tooltip-text">The percentage of your capital you're willing to risk on this trade. Typically 1-2% is recommended for conservative risk management.</span>
+                        </label>
+                        <input type="number" id="riskPercentage" step="0.1" value="1" placeholder="Enter risk percentage" required>
+                    </div>
+                    <button type="submit" id="calculateBtn">Calculate Risk & Position Size</button>
+                </form>
+                <div class="spinner" id="spinner"></div>
+            </div>
+
+            <div class="results-section">
+                <div class="results-grid">
+                    <div id="positionSizeCard" class="result-card" style="display: none;">
+                        <div class="result-title">
+                            <span>Position Size</span>
+                        </div>
+                        <div id="sharesResult" class="result-value">-</div>
+                        <div class="result-subtitle">Recommended shares to buy</div>
+                        
+                        <div class="metric">
+                            <span class="metric-label">Total Investment:</span>
+                            <span id="totalInvestment" class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Capital Utilization:</span>
+                            <span id="capitalUtilization" class="metric-value">-</span>
+                        </div>
+                        <div class="progress-container">
+                            <div id="utilizationBar" class="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <div id="riskRewardCard" class="result-card" style="display: none;">
+                        <div class="result-title">
+                            <span>Risk/Reward Analysis</span>
+                        </div>
+                        
+                        <div class="metric">
+                            <span class="metric-label">Risk Amount:</span>
+                            <span id="riskAmount" class="metric-value">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Potential Profit:</span>
+                            <span id="expectedProfit" class="metric-value positive">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Potential Loss:</span>
+                            <span id="expectedLoss" class="metric-value negative">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Risk/Reward Ratio:</span>
+                            <span id="riskRewardRatio" class="metric-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-container">
+                    <div id="chartContainer" class="chart-wrapper" style="display: none;">
+                        <canvas id="profitLossChart"></canvas>
+                    </div>
+                    <div id="pieChartContainer" class="chart-wrapper" style="display: none;">
+                        <canvas id="capitalAllocationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2024 Baydaar Capital Club Risk Management Tool. All rights reserved.
+        </footer>
+    </div>
+
+    <script>
+        // Handle mobile tooltip clicks
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltips = document.querySelectorAll('.tooltip');
+            
+            tooltips.forEach(tooltip => {
+                tooltip.addEventListener('click', function(e) {
+                    // For mobile devices
+                    if (window.innerWidth < 768) {
+                        // Remove active class from all tooltips
+                        tooltips.forEach(t => {
+                            if (t !== tooltip) {
+                                t.classList.remove('tooltip-active');
+                            }
+                        });
+                        
+                        // Toggle active class on clicked tooltip
+                        this.classList.toggle('tooltip-active');
+                        e.stopPropagation();
+                    }
+                });
+            });
+            
+            // Close all tooltips when clicking elsewhere
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.tooltip')) {
+                    tooltips.forEach(t => t.classList.remove('tooltip-active'));
+                }
+            });
+        });
+
+        document.getElementById('riskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Show loading spinner
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'block';
+            
+            // Delay calculation slightly to show loading effect and improve perceived performance
+            setTimeout(calculateResults, 300);
+        });
+        
+        function calculateResults() {
+            // Get user inputs
+            const totalCapital = parseFloat(document.getElementById('totalCapital').value);
+            const buyPrice = parseFloat(document.getElementById('buyPrice').value);
+            const takeProfitPrice = parseFloat(document.getElementById('takeProfitPrice').value);
+            const stopLossPrice = parseFloat(document.getElementById('stopLossPrice').value);
+            const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
+
+            // Calculate the risk per share and the total risk allowed
+            const riskPerShare = Math.abs(buyPrice - stopLossPrice);
+            const riskAmount = totalCapital * (riskPercentage / 100);
+
+            // Calculate the number of shares to buy and their worth
+            const sharesToBuy = Math.floor(riskAmount / riskPerShare);
+            const totalInvestment = sharesToBuy * buyPrice;
+            const capitalUtilization = (totalInvestment / totalCapital) * 100;
+
+            // Calculate expected profit and loss
+            const expectedProfit = sharesToBuy * (takeProfitPrice - buyPrice);
+            const expectedLoss = sharesToBuy * (stopLossPrice - buyPrice);
+            const riskRewardRatio = Math.abs(expectedProfit / expectedLoss).toFixed(2) + ":1";
+
+            // Format currency values
+            const formatCurrency = (value) => {
+                return "PKR " + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+            };
+
+            // Display results
+            document.getElementById('sharesResult').textContent = sharesToBuy.toLocaleString();
+            document.getElementById('totalInvestment').textContent = formatCurrency(totalInvestment);
+            document.getElementById('capitalUtilization').textContent = capitalUtilization.toFixed(2) + "%";
+            document.getElementById('riskAmount').textContent = formatCurrency(riskAmount);
+            document.getElementById('expectedProfit').textContent = formatCurrency(expectedProfit);
+            document.getElementById('expectedLoss').textContent = formatCurrency(Math.abs(expectedLoss));
+            document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+            
+            // Hide spinner
+            document.getElementById('spinner').style.display = 'none';
+            
+            // Show result cards
+            document.getElementById('positionSizeCard').style.display = 'block';
+            document.getElementById('riskRewardCard').style.display = 'block';
+            document.getElementById('chartContainer').style.display = 'block';
+            document.getElementById('pieChartContainer').style.display = 'block';
+            
+            // Update utilization bar
+            document.getElementById('utilizationBar').style.width = Math.min(capitalUtilization, 100) + "%";
+
+            // Create profit/loss chart
+            createProfitLossChart(expectedProfit, expectedLoss);
+            
+            // Create capital allocation pie chart
+            createCapitalAllocationChart(totalInvestment, totalCapital - totalInvestment);
+            
+            // Scroll to results on mobile
+            if (window.innerWidth < 768) {
+                document.getElementById('positionSizeCard').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function createProfitLossChart(profit, loss) {
+            const ctx = document.getElementById('profitLossChart').getContext('2d');
+            
+            // Determine better chart type based on screen size
+            const chartType = window.innerWidth < 768 ? 'bar' : 'bar';
+            const indexAxis = window.innerWidth < 768 ? 'x' : 'y';
+            
+            // Font sizes based on screen width
+            const titleSize = window.innerWidth < 576 ? 14 : 16;
+            const fontSize = window.innerWidth < 576 ? 11 : 12;
+            
+            // Destroy existing chart if it exists
+            if (window.profitLossChart instanceof Chart) {
+                window.profitLossChart.destroy();
+            }
+            
+            window.profitLossChart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: ['Expected Outcome'],
+                    datasets: [
+                        {
+                            label: 'Potential Profit',
+                            data: [profit],
+                            backgroundColor: '#10b981',
+                            borderColor: '#059669',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Potential Loss',
+                            data: [Math.abs(loss)],
+                            backgroundColor: '#ef4444',
+                            borderColor: '#dc2626',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: indexAxis,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Profit/Loss Analysis',
+                            font: {
+                                size: titleSize
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: fontSize
+                                },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += 'PKR ' + context.raw.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: fontSize
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: fontSize
+                                },
+                                callback: function(value) {
+                                    if (value >= 1000000) {
+                                        return (value / 1000000).toFixed(1) + 'M';
+                                    } else if (value >= 1000) {
+                                        return (value / 1000).toFixed(1) + 'K';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCapitalAllocationChart(invested, remaining) {
+            const ctx = document.getElementById('capitalAllocationChart').getContext('2d');
+            
+            // Font sizes based on screen width
+            const titleSize = window.innerWidth < 576 ? 14 : 16;
+            const fontSize = window.innerWidth < 576 ? 11 : 12;
+            
+            // Destroy existing chart if it exists
+            if (window.capitalAllocationChart instanceof Chart) {
+                window.capitalAllocationChart.destroy();
+            }
+            
+            window.capitalAllocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Invested Capital', 'Remaining Capital'],
+                    datasets: [{
+                        data: [invested, remaining],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#e2e8f0'
+                        ],
+                        borderColor: [
+                            '#2563eb',
+                            '#cbd5e1'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Capital Allocation',
+                            font: {
+                                size: titleSize
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    size: fontSize
+                                },
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += 'PKR ' + context.raw.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                                    label += ' (' + (context.raw / (invested + remaining) * 100).toFixed(2) + '%)';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Handle window resize for responsive charts
+        window.addEventListener('resize', function() {
+            const resultsVisible = document.getElementById('positionSizeCard').style.display !== 'none';
+            
+            if (resultsVisible) {
+                // Re-create charts on window resize to adjust for new dimensions
+                const profit = parseFloat(document.getElementById('expectedProfit').textContent.replace(/[^0-9.-]+/g, ''));
+                const loss = parseFloat(document.getElementById('expectedLoss').textContent.replace(/[^0-9.-]+/g, ''));
+                
+                const totalInvestmentText = document.getElementById('totalInvestment').textContent;
+                const totalInvestment = parseFloat(totalInvestmentText.replace(/[^0-9.-]+/g, ''));
+                
+                const totalCapital = parseFloat(document.getElementById('totalCapital').value);
+                
+                createProfitLossChart(profit, loss);
+                createCapitalAllocationChart(totalInvestment, totalCapital - totalInvestment);
+            }
+        });
+    </script>
+</body>
+</html>
