@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,7 +30,6 @@
     overflow-x: hidden;
   }
 
-  /* GRID BACKGROUND */
   body::before {
     content: '';
     position: fixed;
@@ -54,6 +54,150 @@
     z-index: 0;
   }
 
+  /* ===== LOGIN PAGE ===== */
+  #loginPage {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  #loginPage::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,135,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,135,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .login-box {
+    position: relative;
+    z-index: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 48px 44px;
+    width: 100%;
+    max-width: 400px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .login-badge {
+    background: var(--accent);
+    color: #000;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .login-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+    margin-bottom: 8px;
+  }
+
+  .login-title span { color: var(--accent); }
+
+  .login-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 36px;
+  }
+
+  .login-field {
+    margin-bottom: 20px;
+  }
+
+  .login-field label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .login-field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .login-field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,255,135,0.08);
+  }
+
+  .login-error {
+    display: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    margin-bottom: 16px;
+    padding: 10px 14px;
+    background: rgba(255,68,68,0.08);
+    border: 1px solid rgba(255,68,68,0.3);
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+
+  .login-error.show { display: block; }
+
+  .btn-login {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-login::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .btn-login:hover::after { transform: translateX(0); }
+  .btn-login:active { transform: scale(0.98); }
+
+  /* ===== MAIN APP ===== */
+  #mainApp { display: none; }
+
   .container {
     position: relative;
     z-index: 1;
@@ -62,7 +206,6 @@
     padding: 40px 24px 80px;
   }
 
-  /* HEADER */
   header {
     display: flex;
     align-items: flex-end;
@@ -122,6 +265,41 @@
   .ticker-item .up { color: var(--accent); }
   .ticker-item .down { color: var(--accent2); }
 
+  /* CURRENCY SELECTOR */
+  .currency-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .currency-selector label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .currency-btn {
+    padding: 5px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.06em;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+  }
+
+  .currency-btn.active {
+    background: rgba(0,255,135,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   /* MAIN GRID */
   .main-grid {
     display: grid;
@@ -141,9 +319,7 @@
     position: relative;
   }
 
-  .panel-full {
-    grid-column: 1 / -1;
-  }
+  .panel-full { grid-column: 1 / -1; }
 
   .panel-title {
     font-family: 'DM Mono', monospace;
@@ -165,10 +341,7 @@
     background: var(--accent);
   }
 
-  /* INPUTS */
-  .field {
-    margin-bottom: 20px;
-  }
+  .field { margin-bottom: 20px; }
 
   .field label {
     display: block;
@@ -193,6 +366,7 @@
     font-size: 13px;
     color: var(--muted);
     pointer-events: none;
+    min-width: 20px;
   }
 
   input[type="number"] {
@@ -200,7 +374,7 @@
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 3px;
-    padding: 12px 14px 12px 30px;
+    padding: 12px 14px 12px 38px;
     color: var(--text);
     font-family: 'DM Mono', monospace;
     font-size: 15px;
@@ -228,11 +402,7 @@
     pointer-events: none;
   }
 
-  /* SLIDER */
-  .slider-wrap {
-    position: relative;
-    margin-top: 4px;
-  }
+  .slider-wrap { position: relative; margin-top: 4px; }
 
   input[type="range"] {
     width: 100%;
@@ -256,9 +426,7 @@
     transition: transform 0.15s;
   }
 
-  input[type="range"]::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
 
   .range-labels {
     display: flex;
@@ -269,7 +437,6 @@
     margin-top: 6px;
   }
 
-  /* CALCULATE BUTTON */
   .btn-calculate {
     width: 100%;
     padding: 16px;
@@ -299,7 +466,6 @@
   .btn-calculate:hover::after { transform: translateX(0); }
   .btn-calculate:active { transform: scale(0.98); }
 
-  /* RESULTS */
   .results-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -366,7 +532,6 @@
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
   }
 
-  /* TRADE SUMMARY */
   .trade-summary {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -415,7 +580,6 @@
   .summary-cell.green { color: var(--accent); }
   .summary-cell.red { color: var(--accent2); }
 
-  /* RISK GAUGE */
   .gauge-panel {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -458,9 +622,7 @@
     letter-spacing: 0.1em;
   }
 
-  .risk-breakdown {
-    flex: 1;
-  }
+  .risk-breakdown { flex: 1; }
 
   .risk-item {
     display: flex;
@@ -510,7 +672,6 @@
     text-align: right;
   }
 
-  /* POSITION SIZING TABLE */
   .position-table {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -540,14 +701,8 @@
     background: var(--accent);
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  thead tr {
-    background: var(--surface2);
-  }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--surface2); }
 
   th {
     padding: 12px 20px;
@@ -579,7 +734,6 @@
   .profit { color: var(--accent); }
   .loss { color: var(--accent2); }
 
-  /* TOOLTIP */
   .tooltip {
     display: inline-block;
     width: 14px;
@@ -597,7 +751,6 @@
     position: relative;
   }
 
-  /* ANIMATIONS */
   @keyframes fadeDown {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -608,9 +761,7 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .pulse {
-    animation: pulse 0.4s ease;
-  }
+  .pulse { animation: pulse 0.4s ease; }
 
   @keyframes pulse {
     0% { transform: scale(1); }
@@ -618,7 +769,6 @@
     100% { transform: scale(1); }
   }
 
-  /* ALERT BANNER */
   .alert-banner {
     display: none;
     background: rgba(255,68,68,0.08);
@@ -635,7 +785,28 @@
   .alert-banner.show { display: flex; align-items: center; gap: 10px; }
   .alert-banner.green { background: rgba(0,255,135,0.08); border-color: rgba(0,255,135,0.3); color: var(--accent); }
 
-  /* RESPONSIVE */
+  /* LOGOUT BUTTON */
+  .btn-logout {
+    padding: 7px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .btn-logout:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .counting { opacity: 0.6; }
+
   @media (max-width: 768px) {
     .main-grid { grid-template-columns: 1fr; }
     .panel-full { grid-column: 1; }
@@ -646,46 +817,66 @@
     header { flex-direction: column; align-items: flex-start; }
     .ticker-tape { display: none; }
   }
-
-  /* NUMBER COUNTER ANIMATION */
-  .counting { opacity: 0.6; }
 </style>
 </head>
 <body>
 
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="login-badge">SECURE ACCESS</div>
+    <h2 class="login-title">RISK<br><span>CALCULATOR</span></h2>
+    <p class="login-sub">ENTER PASSWORD TO CONTINUE</p>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+    <div class="login-error" id="loginError">⚠ Incorrect password. Access denied.</div>
+    <button class="btn-login" onclick="doLogin()">UNLOCK ACCESS</button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="mainApp">
 <div class="container">
 
   <header>
     <div>
       <div class="header-badge">RISK MANAGEMENT SYSTEM v2.0</div>
-      <h1>STOCK TRADING<br><span>RISK CALC</span></h1>
+      <h1>STOCK TRADING<br><span>RISK CALCULATOR</span></h1>
       <p class="header-sub">POSITION SIZING · STOP LOSS · R:R ANALYSIS</p>
+      <!-- CURRENCY SELECTOR -->
+      <div class="currency-selector">
+        <label>Currency:</label>
+        <button class="currency-btn active" id="btnUSD" onclick="setCurrency('$')">$ USD</button>
+        <button class="currency-btn" id="btnRS" onclick="setCurrency('Rs')">Rs PKR</button>
+      </div>
     </div>
     <div class="ticker-tape">
       <div class="ticker-item">SPY <span class="up">▲ +0.84%</span></div>
       <div class="ticker-item">QQQ <span class="up">▲ +1.12%</span></div>
       <div class="ticker-item">VIX <span class="down">▼ 18.42</span></div>
       <div class="ticker-item">DXY <span class="down">▼ -0.31%</span></div>
+      <div style="margin-top:8px">
+        <button class="btn-logout" onclick="doLogout()">⏻ Logout</button>
+      </div>
     </div>
   </header>
 
-  <!-- ALERT BANNER -->
   <div class="alert-banner" id="alertBanner">
     <span>⚠</span>
     <span id="alertText"></span>
   </div>
 
-  <!-- INPUT PANELS -->
   <div class="main-grid">
 
-    <!-- ACCOUNT & RISK PANEL -->
     <div class="panel">
       <div class="panel-title">Account Parameters</div>
 
       <div class="field">
         <label>Account Size <span class="tooltip" title="Total capital in your trading account">?</span></label>
         <div class="input-wrap">
-          <span class="input-prefix">$</span>
+          <span class="input-prefix" id="pfx1">$</span>
           <input type="number" id="accountSize" value="50000" min="0" step="100">
         </div>
       </div>
@@ -713,20 +904,19 @@
       <div class="field">
         <label>Commission Per Trade</label>
         <div class="input-wrap">
-          <span class="input-prefix">$</span>
+          <span class="input-prefix" id="pfx2">$</span>
           <input type="number" id="commission" value="0" min="0" step="0.01">
         </div>
       </div>
     </div>
 
-    <!-- TRADE PARAMETERS -->
     <div class="panel">
       <div class="panel-title">Trade Parameters</div>
 
       <div class="field">
         <label>Entry Price <span class="tooltip" title="Price at which you plan to enter the trade">?</span></label>
         <div class="input-wrap">
-          <span class="input-prefix">$</span>
+          <span class="input-prefix" id="pfx3">$</span>
           <input type="number" id="entryPrice" value="150" min="0.01" step="0.01">
         </div>
       </div>
@@ -734,7 +924,7 @@
       <div class="field">
         <label>Stop Loss Price</label>
         <div class="input-wrap">
-          <span class="input-prefix">$</span>
+          <span class="input-prefix" id="pfx4">$</span>
           <input type="number" id="stopLoss" value="142.50" min="0.01" step="0.01">
         </div>
       </div>
@@ -742,7 +932,7 @@
       <div class="field">
         <label>Target Price</label>
         <div class="input-wrap">
-          <span class="input-prefix">$</span>
+          <span class="input-prefix" id="pfx5">$</span>
           <input type="number" id="targetPrice" value="172.50" min="0.01" step="0.01">
         </div>
       </div>
@@ -759,7 +949,6 @@
     </div>
   </div>
 
-  <!-- KEY METRICS -->
   <div class="results-grid">
     <div class="result-card">
       <div class="result-label">Position Size (Shares)</div>
@@ -787,20 +976,14 @@
     </div>
   </div>
 
-  <!-- RISK GAUGE & BREAKDOWN -->
   <div class="gauge-panel">
     <div class="gauge-wrap">
       <svg class="gauge-svg" viewBox="0 0 200 120">
-        <!-- Background arc -->
         <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#2a2a35" stroke-width="14" stroke-linecap="round"/>
-        <!-- Danger zone -->
         <path d="M 140 30 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,68,68,0.3)" stroke-width="14" stroke-linecap="round"/>
-        <!-- Warning zone -->
         <path d="M 100 20 A 80 80 0 0 1 140 30" fill="none" stroke="rgba(255,215,0,0.2)" stroke-width="14" stroke-linecap="round"/>
-        <!-- Animated gauge needle arc -->
         <path id="gaugeArc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round"
               stroke-dasharray="251" stroke-dashoffset="251" style="transition: stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1), stroke 0.5s"/>
-        <!-- Center dot -->
         <circle cx="100" cy="100" r="6" fill="var(--accent)" opacity="0.6"/>
       </svg>
       <div class="gauge-label">
@@ -838,7 +1021,6 @@
     </div>
   </div>
 
-  <!-- TRADE SUMMARY TABLE -->
   <div class="trade-summary">
     <div class="summary-header">
       <div class="summary-col">Metric</div>
@@ -877,7 +1059,6 @@
     </div>
   </div>
 
-  <!-- POSITION SIZE SCENARIOS TABLE -->
   <div class="position-table">
     <div class="pos-table-title">Scenario Analysis — Multiple Risk Levels</div>
     <table>
@@ -903,264 +1084,285 @@
   </div>
 
 </div>
+</div><!-- end mainApp -->
 
 <script>
-let direction = 'long';
+  // ===== LOGIN =====
+  const CORRECT_PASSWORD = 'MyTrade123';
 
-function setDirection(dir) {
-  direction = dir;
-  const btnLong = document.getElementById('btnLong');
-  const btnShort = document.getElementById('btnShort');
-  if (dir === 'long') {
-    btnLong.style.background = 'rgba(0,255,135,0.1)';
-    btnLong.style.borderColor = 'var(--accent)';
-    btnLong.style.color = 'var(--accent)';
-    btnShort.style.background = 'var(--surface2)';
-    btnShort.style.borderColor = 'var(--border)';
-    btnShort.style.color = 'var(--muted)';
-  } else {
-    btnShort.style.background = 'rgba(255,68,68,0.1)';
-    btnShort.style.borderColor = 'var(--accent2)';
-    btnShort.style.color = 'var(--accent2)';
-    btnLong.style.background = 'var(--surface2)';
-    btnLong.style.borderColor = 'var(--border)';
-    btnLong.style.color = 'var(--muted)';
-  }
-}
-
-// Sync slider and input
-const riskInput = document.getElementById('riskPercent');
-const riskSlider = document.getElementById('riskSlider');
-riskInput.addEventListener('input', () => { riskSlider.value = riskInput.value; });
-riskSlider.addEventListener('input', () => { riskInput.value = riskSlider.value; });
-
-function fmt(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function fmtInt(n) { return Math.round(n).toLocaleString(); }
-
-function animateValue(el, val, prefix='', suffix='', decimals=2) {
-  el.classList.add('counting');
-  const target = parseFloat(val);
-  const start = 0;
-  const duration = 600;
-  const startTime = performance.now();
-  function step(now) {
-    const elapsed = now - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const current = start + (target - start) * eased;
-    el.textContent = prefix + (decimals === 0 ? fmtInt(current) : fmt(current)) + suffix;
-    if (progress < 1) requestAnimationFrame(step);
-    else { el.classList.remove('counting'); el.textContent = prefix + (decimals === 0 ? fmtInt(target) : fmt(target)) + suffix; }
-  }
-  requestAnimationFrame(step);
-}
-
-function setBar(id, pct, color) {
-  const el = document.getElementById(id);
-  el.style.width = Math.min(100, pct) + '%';
-  if (color) el.style.background = color;
-}
-
-function setGauge(pct) {
-  const arc = document.getElementById('gaugeArc');
-  const total = 251;
-  const fill = total * (1 - Math.min(pct, 100) / 100);
-  arc.style.strokeDashoffset = fill;
-
-  let color = 'var(--accent)';
-  if (pct > 60) color = 'var(--accent2)';
-  else if (pct > 35) color = 'var(--accent3)';
-  arc.style.stroke = color;
-
-  const gv = document.getElementById('gaugeValue');
-  animateValue(gv, pct, '', '%', 1);
-}
-
-function showAlert(msg, type='danger') {
-  const b = document.getElementById('alertBanner');
-  const t = document.getElementById('alertText');
-  b.className = 'alert-banner show' + (type === 'success' ? ' green' : '');
-  t.textContent = msg;
-}
-
-function hideAlert() {
-  document.getElementById('alertBanner').className = 'alert-banner';
-}
-
-function riskTag(rr) {
-  if (rr >= 3) return '<span class="td-risk low">EXCELLENT</span>';
-  if (rr >= 2) return '<span class="td-risk low">GOOD</span>';
-  if (rr >= 1.5) return '<span class="td-risk med">FAIR</span>';
-  if (rr >= 1) return '<span class="td-risk med">MARGINAL</span>';
-  return '<span class="td-risk high">POOR</span>';
-}
-
-function calculate() {
-  hideAlert();
-
-  const accountSize = parseFloat(document.getElementById('accountSize').value) || 0;
-  const riskPercent = parseFloat(document.getElementById('riskPercent').value) || 0;
-  const maxRisk = parseFloat(document.getElementById('maxRisk').value) || 10;
-  const commission = parseFloat(document.getElementById('commission').value) || 0;
-  const entryPrice = parseFloat(document.getElementById('entryPrice').value) || 0;
-  const stopLoss = parseFloat(document.getElementById('stopLoss').value) || 0;
-  const targetPrice = parseFloat(document.getElementById('targetPrice').value) || 0;
-
-  // Validation
-  if (!accountSize || !entryPrice || !stopLoss || !targetPrice) {
-    showAlert('Please fill in all required fields before calculating.');
-    return;
+  function doLogin() {
+    const pw = document.getElementById('loginPassword').value;
+    if (pw === CORRECT_PASSWORD) {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      calculate();
+    } else {
+      const err = document.getElementById('loginError');
+      err.classList.add('show');
+      document.getElementById('loginPassword').value = '';
+      document.getElementById('loginPassword').focus();
+      setTimeout(() => err.classList.remove('show'), 3000);
+    }
   }
 
-  if (direction === 'long' && stopLoss >= entryPrice) {
-    showAlert('For a LONG trade, stop loss must be below entry price.');
-    return;
+  function doLogout() {
+    document.getElementById('mainApp').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('loginPassword').value = '';
   }
 
-  if (direction === 'short' && stopLoss <= entryPrice) {
-    showAlert('For a SHORT trade, stop loss must be above entry price.');
-    return;
+  // ===== CURRENCY =====
+  let currencySymbol = '$';
+
+  function setCurrency(sym) {
+    currencySymbol = sym;
+    const isRs = sym === 'Rs';
+    document.getElementById('btnUSD').classList.toggle('active', !isRs);
+    document.getElementById('btnRS').classList.toggle('active', isRs);
+    // Update all prefixes
+    ['pfx1','pfx2','pfx3','pfx4','pfx5'].forEach(id => {
+      document.getElementById(id).textContent = sym;
+    });
+    // Recalculate to refresh displayed values
+    calculate();
   }
 
-  if (direction === 'long' && targetPrice <= entryPrice) {
-    showAlert('For a LONG trade, target price must be above entry price.');
-    return;
+  function C(val) {
+    // Format with currency symbol
+    return currencySymbol + fmt(val);
   }
 
-  if (direction === 'short' && targetPrice >= entryPrice) {
-    showAlert('For a SHORT trade, target price must be below entry price.');
-    return;
+  // ===== DIRECTION =====
+  let direction = 'long';
+
+  function setDirection(dir) {
+    direction = dir;
+    const btnLong = document.getElementById('btnLong');
+    const btnShort = document.getElementById('btnShort');
+    if (dir === 'long') {
+      btnLong.style.background = 'rgba(0,255,135,0.1)';
+      btnLong.style.borderColor = 'var(--accent)';
+      btnLong.style.color = 'var(--accent)';
+      btnShort.style.background = 'var(--surface2)';
+      btnShort.style.borderColor = 'var(--border)';
+      btnShort.style.color = 'var(--muted)';
+    } else {
+      btnShort.style.background = 'rgba(255,68,68,0.1)';
+      btnShort.style.borderColor = 'var(--accent2)';
+      btnShort.style.color = 'var(--accent2)';
+      btnLong.style.background = 'var(--surface2)';
+      btnLong.style.borderColor = 'var(--border)';
+      btnLong.style.color = 'var(--muted)';
+    }
   }
 
-  // CORE CALCULATIONS
-  const riskAmount = (accountSize * riskPercent) / 100;
-  const stopDistance = Math.abs(entryPrice - stopLoss);
-  const targetDistance = Math.abs(targetPrice - entryPrice);
+  // Sync slider and input
+  const riskInput = document.getElementById('riskPercent');
+  const riskSlider = document.getElementById('riskSlider');
+  riskInput.addEventListener('input', () => { riskSlider.value = riskInput.value; });
+  riskSlider.addEventListener('input', () => { riskInput.value = riskSlider.value; });
 
-  const shares = Math.floor(riskAmount / stopDistance);
-  const positionValue = shares * entryPrice;
-  const maxLoss = shares * stopDistance;
-  const potentialProfit = shares * targetDistance;
-  const rrRatio = targetDistance / stopDistance;
-  const netProfit = potentialProfit - (commission * 2);
-  const stopDistancePct = (stopDistance / entryPrice) * 100;
-  const targetDistancePct = (targetDistance / entryPrice) * 100;
-  const capitalExposure = (positionValue / accountSize) * 100;
-  const breakEvenWinRate = (1 / (1 + rrRatio)) * 100;
+  function fmt(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtInt(n) { return Math.round(n).toLocaleString(); }
 
-  // Risk gauge score (0–100)
-  let riskScore = 0;
-  riskScore += Math.min(30, (riskPercent / maxRisk) * 30);
-  riskScore += Math.min(40, (capitalExposure / 100) * 40);
-  if (rrRatio < 1) riskScore += 30;
-  else if (rrRatio < 2) riskScore += 15;
-  riskScore = Math.min(100, riskScore);
-
-  // ANIMATE RESULTS
-  const shares_el = document.getElementById('positionShares');
-  animateValue(shares_el, shares, '', '', 0);
-  document.getElementById('positionSub').textContent = `≈ $${fmt(positionValue)} position value`;
-
-  animateValue(document.getElementById('capitalRisk'), maxLoss, '$', '', 2);
-  document.getElementById('capitalRiskSub').textContent = `${fmt(riskPercent)}% of $${fmt(accountSize)} account`;
-
-  animateValue(document.getElementById('rrRatio'), rrRatio, '', ':1', 2);
-  document.getElementById('rrSub').textContent = `${rrRatio >= 2 ? '✓ Favorable setup' : rrRatio >= 1 ? '~ Marginal setup' : '✗ Unfavorable setup'}`;
-
-  const profitEl = document.getElementById('potentialProfit');
-  animateValue(profitEl, potentialProfit, '$', '', 2);
-  profitEl.className = 'result-value safe';
-  document.getElementById('profitSub').textContent = `Net after commission: $${fmt(netProfit)}`;
-
-  // BARS
-  setBar('barShares', Math.min(100, (positionValue / accountSize) * 100));
-  setBar('barCapital', Math.min(100, (maxLoss / accountSize) * 100), 'var(--accent2)');
-  const rrBarPct = Math.min(100, (rrRatio / 5) * 100);
-  const rrColor = rrRatio >= 2 ? 'var(--accent)' : rrRatio >= 1 ? 'var(--accent3)' : 'var(--accent2)';
-  setBar('barRR', rrBarPct, rrColor);
-  setBar('barProfit', Math.min(100, (potentialProfit / accountSize) * 100));
-
-  // R:R color
-  document.getElementById('rrRatio').className = 'result-value ' + (rrRatio >= 2 ? 'safe' : rrRatio >= 1 ? 'warning' : 'danger');
-
-  // GAUGE
-  setGauge(Math.round(riskScore));
-
-  // RISK BREAKDOWN BARS
-  const sl1 = Math.min(100, stopDistancePct * 5);
-  const sl2 = Math.min(100, capitalExposure);
-  const sl3 = Math.min(100, (maxLoss / accountSize) * 100 * 5);
-  const sl4 = Math.min(100, breakEvenWinRate);
-
-  document.getElementById('rb1').style.width = sl1 + '%';
-  document.getElementById('rb2').style.width = sl2 + '%';
-  document.getElementById('rb3').style.width = sl3 + '%';
-  document.getElementById('rb4').style.width = sl4 + '%';
-
-  document.getElementById('rb1val').textContent = fmt(stopDistancePct) + '%';
-  document.getElementById('rb2val').textContent = fmt(capitalExposure) + '%';
-  document.getElementById('rb3val').textContent = fmt((maxLoss / accountSize) * 100) + '%';
-  document.getElementById('rb4val').textContent = fmt(breakEvenWinRate) + '%';
-
-  // TRADE SUMMARY
-  document.getElementById('t_entry').textContent = '$' + fmt(entryPrice);
-  document.getElementById('t_stop').textContent = '$' + fmt(stopLoss);
-  document.getElementById('t_target').textContent = '$' + fmt(targetPrice);
-  document.getElementById('t_shares').textContent = fmtInt(shares);
-  document.getElementById('t_stop_dist').textContent = '$' + fmt(stopDistance) + ' (' + fmt(stopDistancePct) + '%)';
-  document.getElementById('t_tgt_dist').textContent = '$' + fmt(targetDistance) + ' (' + fmt(targetDistancePct) + '%)';
-  document.getElementById('t_pos_val').textContent = '$' + fmt(positionValue);
-  document.getElementById('t_net_profit').textContent = '$' + fmt(netProfit);
-
-  document.getElementById('t_rating1').innerHTML = riskTag(stopDistancePct > 1 ? 3 : 1);
-  document.getElementById('t_rating2').innerHTML = riskTag(rrRatio);
-  document.getElementById('t_rating3').innerHTML = capitalExposure < 50 ? '<span class="td-risk low">SAFE</span>' : '<span class="td-risk high">HIGH EXPOSURE</span>';
-  document.getElementById('t_rating4').innerHTML = riskTag(rrRatio);
-
-  // SCENARIO TABLE
-  const scenarios = [0.5, 1, 1.5, 2, 3, 5, 10];
-  const tbody = document.getElementById('scenarioTableBody');
-  tbody.innerHTML = '';
-
-  scenarios.forEach(pct => {
-    const ra = (accountSize * pct) / 100;
-    const sh = Math.floor(ra / stopDistance);
-    const pv = sh * entryPrice;
-    const pp = sh * targetDistance;
-    const rr = rrRatio;
-
-    const tr = document.createElement('tr');
-    const isActive = Math.abs(pct - riskPercent) < 0.01;
-    if (isActive) tr.style.background = 'rgba(0,255,135,0.05)';
-
-    tr.innerHTML = `
-      <td style="${isActive ? 'color:var(--accent)' : ''}">${isActive ? '► ' : ''}${pct}%</td>
-      <td class="loss">$${fmt(ra)}</td>
-      <td>${fmtInt(sh)}</td>
-      <td>$${fmt(pv)}</td>
-      <td class="profit">$${fmt(pp)}</td>
-      <td style="color:${rr>=2?'var(--accent)':rr>=1?'var(--accent3)':'var(--accent2)'}">${fmt(rr)}:1</td>
-      <td>${riskTag(rr)}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  // Pulse animation on key cards
-  document.querySelectorAll('.result-card').forEach(c => {
-    c.classList.remove('pulse');
-    void c.offsetWidth;
-    c.classList.add('pulse');
-  });
-
-  if (rrRatio >= 2 && riskPercent <= maxRisk / 2) {
-    showAlert('✓ This trade setup looks favorable. R:R is ' + fmt(rrRatio) + ':1 with controlled risk.', 'success');
-  } else if (rrRatio < 1) {
-    showAlert('Risk exceeds reward on this setup. Consider adjusting your stop or target.');
+  function animateValue(el, val, prefix='', suffix='', decimals=2) {
+    el.classList.add('counting');
+    const target = parseFloat(val);
+    const start = 0;
+    const duration = 600;
+    const startTime = performance.now();
+    function step(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = start + (target - start) * eased;
+      el.textContent = prefix + (decimals === 0 ? fmtInt(current) : fmt(current)) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+      else { el.classList.remove('counting'); el.textContent = prefix + (decimals === 0 ? fmtInt(target) : fmt(target)) + suffix; }
+    }
+    requestAnimationFrame(step);
   }
-}
 
-// Auto-calculate on load
-window.addEventListener('load', calculate);
+  function setBar(id, pct, color) {
+    const el = document.getElementById(id);
+    el.style.width = Math.min(100, pct) + '%';
+    if (color) el.style.background = color;
+  }
+
+  function setGauge(pct) {
+    const arc = document.getElementById('gaugeArc');
+    const total = 251;
+    const fill = total * (1 - Math.min(pct, 100) / 100);
+    arc.style.strokeDashoffset = fill;
+    let color = 'var(--accent)';
+    if (pct > 60) color = 'var(--accent2)';
+    else if (pct > 35) color = 'var(--accent3)';
+    arc.style.stroke = color;
+    const gv = document.getElementById('gaugeValue');
+    animateValue(gv, pct, '', '%', 1);
+  }
+
+  function showAlert(msg, type='danger') {
+    const b = document.getElementById('alertBanner');
+    const t = document.getElementById('alertText');
+    b.className = 'alert-banner show' + (type === 'success' ? ' green' : '');
+    t.textContent = msg;
+  }
+
+  function hideAlert() {
+    document.getElementById('alertBanner').className = 'alert-banner';
+  }
+
+  function riskTag(rr) {
+    if (rr >= 3) return '<span class="td-risk low">EXCELLENT</span>';
+    if (rr >= 2) return '<span class="td-risk low">GOOD</span>';
+    if (rr >= 1.5) return '<span class="td-risk med">FAIR</span>';
+    if (rr >= 1) return '<span class="td-risk med">MARGINAL</span>';
+    return '<span class="td-risk high">POOR</span>';
+  }
+
+  function calculate() {
+    hideAlert();
+
+    const accountSize = parseFloat(document.getElementById('accountSize').value) || 0;
+    const riskPercent = parseFloat(document.getElementById('riskPercent').value) || 0;
+    const maxRisk = parseFloat(document.getElementById('maxRisk').value) || 10;
+    const commission = parseFloat(document.getElementById('commission').value) || 0;
+    const entryPrice = parseFloat(document.getElementById('entryPrice').value) || 0;
+    const stopLoss = parseFloat(document.getElementById('stopLoss').value) || 0;
+    const targetPrice = parseFloat(document.getElementById('targetPrice').value) || 0;
+
+    const sym = currencySymbol;
+
+    if (!accountSize || !entryPrice || !stopLoss || !targetPrice) {
+      showAlert('Please fill in all required fields before calculating.');
+      return;
+    }
+
+    if (direction === 'long' && stopLoss >= entryPrice) {
+      showAlert('For a LONG trade, stop loss must be below entry price.');
+      return;
+    }
+    if (direction === 'short' && stopLoss <= entryPrice) {
+      showAlert('For a SHORT trade, stop loss must be above entry price.');
+      return;
+    }
+    if (direction === 'long' && targetPrice <= entryPrice) {
+      showAlert('For a LONG trade, target price must be above entry price.');
+      return;
+    }
+    if (direction === 'short' && targetPrice >= entryPrice) {
+      showAlert('For a SHORT trade, target price must be below entry price.');
+      return;
+    }
+
+    const riskAmount = (accountSize * riskPercent) / 100;
+    const stopDistance = Math.abs(entryPrice - stopLoss);
+    const targetDistance = Math.abs(targetPrice - entryPrice);
+    const shares = Math.floor(riskAmount / stopDistance);
+    const positionValue = shares * entryPrice;
+    const maxLoss = shares * stopDistance;
+    const potentialProfit = shares * targetDistance;
+    const rrRatio = targetDistance / stopDistance;
+    const netProfit = potentialProfit - (commission * 2);
+    const stopDistancePct = (stopDistance / entryPrice) * 100;
+    const targetDistancePct = (targetDistance / entryPrice) * 100;
+    const capitalExposure = (positionValue / accountSize) * 100;
+    const breakEvenWinRate = (1 / (1 + rrRatio)) * 100;
+
+    let riskScore = 0;
+    riskScore += Math.min(30, (riskPercent / maxRisk) * 30);
+    riskScore += Math.min(40, (capitalExposure / 100) * 40);
+    if (rrRatio < 1) riskScore += 30;
+    else if (rrRatio < 2) riskScore += 15;
+    riskScore = Math.min(100, riskScore);
+
+    animateValue(document.getElementById('positionShares'), shares, '', '', 0);
+    document.getElementById('positionSub').textContent = `≈ ${sym}${fmt(positionValue)} position value`;
+
+    animateValue(document.getElementById('capitalRisk'), maxLoss, sym, '', 2);
+    document.getElementById('capitalRiskSub').textContent = `${fmt(riskPercent)}% of ${sym}${fmt(accountSize)} account`;
+
+    animateValue(document.getElementById('rrRatio'), rrRatio, '', ':1', 2);
+    document.getElementById('rrSub').textContent = `${rrRatio >= 2 ? '✓ Favorable setup' : rrRatio >= 1 ? '~ Marginal setup' : '✗ Unfavorable setup'}`;
+
+    const profitEl = document.getElementById('potentialProfit');
+    animateValue(profitEl, potentialProfit, sym, '', 2);
+    profitEl.className = 'result-value safe';
+    document.getElementById('profitSub').textContent = `Net after commission: ${sym}${fmt(netProfit)}`;
+
+    setBar('barShares', Math.min(100, (positionValue / accountSize) * 100));
+    setBar('barCapital', Math.min(100, (maxLoss / accountSize) * 100), 'var(--accent2)');
+    const rrBarPct = Math.min(100, (rrRatio / 5) * 100);
+    const rrColor = rrRatio >= 2 ? 'var(--accent)' : rrRatio >= 1 ? 'var(--accent3)' : 'var(--accent2)';
+    setBar('barRR', rrBarPct, rrColor);
+    setBar('barProfit', Math.min(100, (potentialProfit / accountSize) * 100));
+
+    document.getElementById('rrRatio').className = 'result-value ' + (rrRatio >= 2 ? 'safe' : rrRatio >= 1 ? 'warning' : 'danger');
+
+    setGauge(Math.round(riskScore));
+
+    document.getElementById('rb1').style.width = Math.min(100, stopDistancePct * 5) + '%';
+    document.getElementById('rb2').style.width = Math.min(100, capitalExposure) + '%';
+    document.getElementById('rb3').style.width = Math.min(100, (maxLoss / accountSize) * 100 * 5) + '%';
+    document.getElementById('rb4').style.width = Math.min(100, breakEvenWinRate) + '%';
+
+    document.getElementById('rb1val').textContent = fmt(stopDistancePct) + '%';
+    document.getElementById('rb2val').textContent = fmt(capitalExposure) + '%';
+    document.getElementById('rb3val').textContent = fmt((maxLoss / accountSize) * 100) + '%';
+    document.getElementById('rb4val').textContent = fmt(breakEvenWinRate) + '%';
+
+    document.getElementById('t_entry').textContent = sym + fmt(entryPrice);
+    document.getElementById('t_stop').textContent = sym + fmt(stopLoss);
+    document.getElementById('t_target').textContent = sym + fmt(targetPrice);
+    document.getElementById('t_shares').textContent = fmtInt(shares);
+    document.getElementById('t_stop_dist').textContent = sym + fmt(stopDistance) + ' (' + fmt(stopDistancePct) + '%)';
+    document.getElementById('t_tgt_dist').textContent = sym + fmt(targetDistance) + ' (' + fmt(targetDistancePct) + '%)';
+    document.getElementById('t_pos_val').textContent = sym + fmt(positionValue);
+    document.getElementById('t_net_profit').textContent = sym + fmt(netProfit);
+
+    document.getElementById('t_rating1').innerHTML = riskTag(stopDistancePct > 1 ? 3 : 1);
+    document.getElementById('t_rating2').innerHTML = riskTag(rrRatio);
+    document.getElementById('t_rating3').innerHTML = capitalExposure < 50 ? '<span class="td-risk low">SAFE</span>' : '<span class="td-risk high">HIGH EXPOSURE</span>';
+    document.getElementById('t_rating4').innerHTML = riskTag(rrRatio);
+
+    const scenarios = [0.5, 1, 1.5, 2, 3, 5, 10];
+    const tbody = document.getElementById('scenarioTableBody');
+    tbody.innerHTML = '';
+
+    scenarios.forEach(pct => {
+      const ra = (accountSize * pct) / 100;
+      const sh = Math.floor(ra / stopDistance);
+      const pv = sh * entryPrice;
+      const pp = sh * targetDistance;
+      const rr = rrRatio;
+      const tr = document.createElement('tr');
+      const isActive = Math.abs(pct - riskPercent) < 0.01;
+      if (isActive) tr.style.background = 'rgba(0,255,135,0.05)';
+      tr.innerHTML = `
+        <td style="${isActive ? 'color:var(--accent)' : ''}">${isActive ? '► ' : ''}${pct}%</td>
+        <td class="loss">${sym}${fmt(ra)}</td>
+        <td>${fmtInt(sh)}</td>
+        <td>${sym}${fmt(pv)}</td>
+        <td class="profit">${sym}${fmt(pp)}</td>
+        <td style="color:${rr>=2?'var(--accent)':rr>=1?'var(--accent3)':'var(--accent2)'}">${fmt(rr)}:1</td>
+        <td>${riskTag(rr)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.querySelectorAll('.result-card').forEach(c => {
+      c.classList.remove('pulse');
+      void c.offsetWidth;
+      c.classList.add('pulse');
+    });
+
+    if (rrRatio >= 2 && riskPercent <= maxRisk / 2) {
+      showAlert('✓ This trade setup looks favorable. R:R is ' + fmt(rrRatio) + ':1 with controlled risk.', 'success');
+    } else if (rrRatio < 1) {
+      showAlert('Risk exceeds reward on this setup. Consider adjusting your stop or target.');
+    }
+  }
 </script>
 </body>
 </html>
