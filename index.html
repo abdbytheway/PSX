@@ -478,6 +478,10 @@
     animation: fadeUp 0.7s 0.2s ease both;
   }
 
+  .result-card--wide {
+    grid-column: 1 / -1;
+  }
+
   .result-card {
     background: var(--surface);
     padding: 28px;
@@ -863,8 +867,9 @@
     .panel-full { grid-column: 1; }
     .panel { padding: 20px 16px; }
 
-    /* Results — 2 columns on mobile */
+    /* Results — 2 columns on mobile, wide card still spans full */
     .results-grid { grid-template-columns: 1fr 1fr; }
+    .result-card--wide { grid-column: 1 / -1; }
     .result-card { padding: 18px 14px; }
     .result-value { font-size: 32px; }
 
@@ -908,6 +913,7 @@
 
     /* Stack results to single column */
     .results-grid { grid-template-columns: 1fr; }
+    .result-card--wide { grid-column: 1; }
     .result-card { padding: 16px 14px; }
     .result-value { font-size: 36px; }
 
@@ -952,7 +958,7 @@
 <div id="loginPage">
   <div class="login-box">
     <div class="login-badge">SECURE ACCESS</div>
-    <h2 class="login-title">RISK<br><span>CALC</span></h2>
+    <h2 class="login-title">RISK<br><span>CALCULATOR</span></h2>
     <p class="login-sub">ENTER PASSWORD TO CONTINUE</p>
     <div class="login-field">
       <label>Password</label>
@@ -970,7 +976,7 @@
   <header>
     <div>
       <div class="header-badge">RISK MANAGEMENT SYSTEM v2.0</div>
-      <h1>STOCK TRADING<br><span>RISK CALC</span></h1>
+      <h1>STOCK TRADING<br><span>RISK CALCULATOR</span></h1>
       <p class="header-sub">POSITION SIZING · STOP LOSS · R:R ANALYSIS</p>
       <!-- CURRENCY SELECTOR -->
       <div class="currency-selector">
@@ -1100,6 +1106,12 @@
       <div class="result-value safe" id="potentialProfit">—</div>
       <div class="result-sub" id="profitSub">—</div>
       <div class="result-bar"><div class="result-bar-fill" id="barProfit" style="background:var(--accent)"></div></div>
+    </div>
+    <div class="result-card result-card--wide">
+      <div class="result-label">Capital Utilization <span class="tooltip" title="Percentage of total account capital tied up in this position">?</span></div>
+      <div class="result-value" id="capitalUtil">—</div>
+      <div class="result-sub" id="capitalUtilSub">—</div>
+      <div class="result-bar"><div class="result-bar-fill" id="barCapitalUtil" style="background:var(--accent3)"></div></div>
     </div>
   </div>
 
@@ -1419,6 +1431,14 @@
     animateValue(profitEl, potentialProfit, sym, '', 2);
     profitEl.className = 'result-value safe';
     document.getElementById('profitSub').textContent = `Net after commission: ${sym}${fmt(netProfit)}`;
+
+    // Capital Utilization
+    const capitalUtilPct = capitalExposure;
+    const capitalUtilEl = document.getElementById('capitalUtil');
+    animateValue(capitalUtilEl, capitalUtilPct, '', '%', 2);
+    capitalUtilEl.className = 'result-value ' + (capitalUtilPct > 75 ? 'danger' : capitalUtilPct > 40 ? 'warning' : 'safe');
+    document.getElementById('capitalUtilSub').textContent = `${sym}${fmt(positionValue)} of ${sym}${fmt(accountSize)} deployed`;
+    setBar('barCapitalUtil', Math.min(100, capitalUtilPct), capitalUtilPct > 75 ? 'var(--accent2)' : capitalUtilPct > 40 ? 'var(--accent3)' : 'var(--accent)');
 
     setBar('barShares', Math.min(100, (positionValue / accountSize) * 100));
     setBar('barCapital', Math.min(100, (maxLoss / accountSize) * 100), 'var(--accent2)');
