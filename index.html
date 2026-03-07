@@ -546,6 +546,7 @@
     grid-template-columns: repeat(5, 1fr);
     background: var(--surface2);
     border-bottom: 1px solid var(--border);
+    min-width: 500px;
   }
 
   .summary-col {
@@ -564,6 +565,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     border-bottom: 1px solid var(--border);
+    min-width: 500px;
   }
 
   .summary-row:last-child { border-bottom: none; }
@@ -807,15 +809,140 @@
 
   .counting { opacity: 0.6; }
 
+  /* ===== TABLET (max 900px) ===== */
+  @media (max-width: 900px) {
+    .container { padding: 28px 16px 60px; }
+
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .ticker-tape {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-left: 0;
+    }
+
+    .gauge-panel { flex-direction: column; gap: 28px; }
+    .gauge-wrap { width: 160px; align-self: center; }
+    .risk-bar-outer { width: 90px; }
+  }
+
+  /* ===== MOBILE (max 768px) ===== */
   @media (max-width: 768px) {
+    .container { padding: 20px 12px 50px; }
+
+    /* Header */
+    header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+
+    h1 { font-size: clamp(38px, 10vw, 56px); }
+
+    .ticker-tape {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-left: 0;
+    }
+
+    .currency-selector { flex-wrap: wrap; }
+
+    /* Input grid — single column */
     .main-grid { grid-template-columns: 1fr; }
     .panel-full { grid-column: 1; }
+    .panel { padding: 20px 16px; }
+
+    /* Results — 2 columns on mobile */
     .results-grid { grid-template-columns: 1fr 1fr; }
-    .summary-header, .summary-row { grid-template-columns: 1fr 1fr; }
-    .summary-col:nth-child(n+3), .summary-cell:nth-child(n+3) { display: none; }
-    .gauge-panel { flex-direction: column; }
-    header { flex-direction: column; align-items: flex-start; }
-    .ticker-tape { display: none; }
+    .result-card { padding: 18px 14px; }
+    .result-value { font-size: 32px; }
+
+    /* Gauge */
+    .gauge-panel { flex-direction: column; gap: 24px; padding: 20px 16px; }
+    .gauge-wrap { width: 150px; align-self: center; }
+    .risk-breakdown { width: 100%; }
+    .risk-bar-outer { width: 80px; }
+    .risk-name { font-size: 10px; }
+
+    /* Trade summary — scrollable on small screens */
+    .trade-summary { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .summary-header { grid-template-columns: repeat(5, minmax(110px, 1fr)); min-width: 550px; }
+    .summary-row { grid-template-columns: repeat(5, minmax(110px, 1fr)); min-width: 550px; }
+
+    /* Scenario table — scrollable */
+    .position-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .position-table table { min-width: 560px; }
+
+    th { padding: 10px 12px; font-size: 9px; }
+    td { padding: 11px 12px; font-size: 12px; }
+
+    /* Range labels wrapping */
+    .range-labels { font-size: 9px; gap: 2px; }
+    .range-labels span:nth-child(2),
+    .range-labels span:nth-child(3) { display: none; }
+
+    /* Login box */
+    .login-box { padding: 32px 24px; margin: 16px; }
+    .login-title { font-size: 40px; }
+
+    /* Alert */
+    .alert-banner { font-size: 11px; padding: 12px 14px; }
+  }
+
+  /* ===== SMALL MOBILE (max 480px) ===== */
+  @media (max-width: 480px) {
+    .container { padding: 16px 10px 40px; }
+
+    header { margin-bottom: 20px; }
+
+    /* Stack results to single column */
+    .results-grid { grid-template-columns: 1fr; }
+    .result-card { padding: 16px 14px; }
+    .result-value { font-size: 36px; }
+
+    /* Panel padding */
+    .panel { padding: 16px 14px; }
+    .panel-title { margin-bottom: 18px; }
+
+    /* Gauge */
+    .gauge-wrap { width: 130px; }
+    .risk-bar-outer { width: 60px; }
+    .risk-name { font-size: 9px; letter-spacing: 0.04em; }
+    .risk-pct { font-size: 11px; width: 34px; }
+
+    /* Ticker tape — hide on very small */
+    .ticker-tape .ticker-item { font-size: 10px; }
+
+    /* Currency buttons */
+    .currency-btn { padding: 5px 10px; font-size: 11px; }
+
+    /* Inputs */
+    input[type="number"] { font-size: 14px; }
+
+    /* Summary table header/row need horizontal scroll */
+    .summary-header, .summary-row { min-width: 500px; }
+
+    /* Login */
+    .login-box { padding: 28px 18px; }
+    .login-title { font-size: 36px; }
+    .btn-login { font-size: 18px; }
+
+    /* Scenario table */
+    .position-table table { min-width: 500px; }
+
+    /* pos-table-title wrapping */
+    .pos-table-title { font-size: 9px; padding: 14px 16px; }
   }
 </style>
 </head>
@@ -825,7 +952,7 @@
 <div id="loginPage">
   <div class="login-box">
     <div class="login-badge">SECURE ACCESS</div>
-    <h2 class="login-title">RISK<br><span>CALCULATOR</span></h2>
+    <h2 class="login-title">RISK<br><span>CALC</span></h2>
     <p class="login-sub">ENTER PASSWORD TO CONTINUE</p>
     <div class="login-field">
       <label>Password</label>
@@ -843,7 +970,7 @@
   <header>
     <div>
       <div class="header-badge">RISK MANAGEMENT SYSTEM v2.0</div>
-      <h1>STOCK TRADING<br><span>RISK CALCULATOR</span></h1>
+      <h1>STOCK TRADING<br><span>RISK CALC</span></h1>
       <p class="header-sub">POSITION SIZING · STOP LOSS · R:R ANALYSIS</p>
       <!-- CURRENCY SELECTOR -->
       <div class="currency-selector">
@@ -1022,6 +1149,7 @@
   </div>
 
   <div class="trade-summary">
+    <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
     <div class="summary-header">
       <div class="summary-col">Metric</div>
       <div class="summary-col">Value</div>
@@ -1057,6 +1185,7 @@
       <div class="summary-cell green" id="t_net_profit">—</div>
       <div class="summary-cell" id="t_rating4">—</div>
     </div>
+    </div><!-- end scroll wrapper -->
   </div>
 
   <div class="position-table">
